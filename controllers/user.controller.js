@@ -400,3 +400,40 @@ export const updateUser = asyncHandler(async (req, res, next) => {
     message: 'User details updated successfully',
   });
 });
+
+export const verifyAccount = asyncHandler(async (req, res, next) => {
+  const { verificationToken } = req.params;
+
+
+  const signupToken = crypto
+    .createHash('sha256')
+    .update(verificationToken)
+    .digest('hex');
+
+
+  //console.log(signupToken);
+
+  const user = await User.findOne({
+    signupToken,
+    signupTokenExpiry: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(
+      new AppError('Link is invalid or expired, please try again', 400)
+    );
+  }
+
+  user.signupverified = true;
+
+  user.signupToken = undefined;
+  user.signupTokenExpiry = undefined;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'User Verified successfully',
+  });
+});
+
