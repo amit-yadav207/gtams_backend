@@ -1,6 +1,6 @@
-import asyncHandler from "../middlewares/asyncHandler.middleware";
-import AppError from "../utils/appError";
-import Application from "../models/application.model";
+import asyncHandler from "../middlewares/asyncHandler.middleware.js";
+import AppError from "../utils/appError.js";
+import Application from "../models/application.model.js";
 import { sendEmail } from '../utils/sendEmail.js';
 import Form from "../models/form.model.js";
 import User from "../models/user.model.js";
@@ -12,29 +12,34 @@ import User from "../models/user.model.js";
 
 
 export const createApplication = asyncHandler(async (req, res, next) => {
-    const { title, courseId, instructor, requiredSkills, department, jobId } = req.body;
-    // const jobId = `${courseId}-${Date.now()}`;
-    //assuming we are sending the jobId from frontend.
+    try {
+        const { title, courseId, instructor, requiredSkills, department, jobId } = req.body;
+        // const jobId = `${courseId}-${Date.now()}`;
+        //assuming we are sending the jobId from frontend.
 
-    const application = await Application.create({
-        title,
-        courseId,
-        instructor,
-        requiredSkills,
-        department,
-        createdBy: req.user.id,
-        jobId
-    })
+        const application = await Application.create({
+            title,
+            courseId,
+            instructor,
+            requiredSkills,
+            department,
+            createdBy: req.user.id,
+            jobId
+        })
 
-    if (!application) {
-        return next(new AppError('Unable to create application.', 505));
+        if (!application) {
+            return next(new AppError('Unable to create application.', 505));
+        }
+
+        return res.status(200).json({
+            success: true,
+            application, //should comment this in production
+            message: "Application created successfully",
+        })
+    } catch (err) {
+        console.error(err)
     }
 
-    return res.status(200).json({
-        success: true,
-        application, //should comment this in production
-        message: "Application created successfully",
-    })
 })
 
 
@@ -68,25 +73,30 @@ export const updateApplication = asyncHandler(async (req, res, next) => {
 
 
 export const deleteApplication = asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    let application = await Application.findById(id);
+        let application = await Application.findById(id);
 
-    if (!application) {
-        return next(new AppError('Application not found.', 404));
+        if (!application) {
+            return next(new AppError('Application not found.', 404));
+        }
+
+        // Check if the user has permission to delete the application
+        if (application.createdBy.toString() !== req.user.id) {
+            return next(new AppError('You are not authorized to delete this application.', 403));
+        }
+
+        await application.remove();
+
+        return res.status(200).json({
+            success: true,
+            message: "Application deleted successfully",
+        });
+    } catch (err) {
+        console.log(err);
     }
 
-    // Check if the user has permission to delete the application
-    if (application.createdBy.toString() !== req.user.id) {
-        return next(new AppError('You are not authorized to delete this application.', 403));
-    }
-
-    await application.remove();
-
-    return res.status(200).json({
-        success: true,
-        message: "Application deleted successfully",
-    });
 });
 
 
@@ -153,3 +163,11 @@ export const applyToApplication = asyncHandler(async (req, res, next) => {
     });
 });
 
+
+export const getAllJobs = asyncHandler(async (req, res, next) => {
+    const jobs = await Application.find({});
+    res.status(200).json({
+        success: true,
+        jobs
+    })
+})

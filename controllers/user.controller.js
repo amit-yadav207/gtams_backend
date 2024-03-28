@@ -9,17 +9,13 @@ import User from '../models/user.model.js';
 import { sendEmail } from '../utils/sendEmail.js';
 
 const cookieOptions = {
-  secure: process.env.NODE_ENV === 'production' ? true : false,
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  secure: true,
+  maxAge: 5 * 24 * 60 * 60 * 1000,
   httpOnly: true,
   sameSite: 'None',
 };
 
-/**
- * @REGISTER
- * @ROUTE @POST {{URL}}/api/v1/user/register
- * @ACCESS Public
- */
+
 export const registerUser = asyncHandler(async (req, res, next) => {
   const { fullName, email, password, phone } = req.body;
   console.log(req.body);
@@ -93,11 +89,6 @@ export const registerUser = asyncHandler(async (req, res, next) => {
 });
 
 
-/**
- * @LOGIN
- * @ROUTE @POST {{URL}}/api/v1/user/login
- * @ACCESS Public
- */
 export const loginUser = asyncHandler(async (req, res, next) => {
   // Destructuring the necessary data from req object
   const { email, password } = req.body;
@@ -134,15 +125,11 @@ export const loginUser = asyncHandler(async (req, res, next) => {
   });
 });
 
-/**
- * @LOGOUT
- * @ROUTE @POST {{URL}}/api/v1/user/logout
- * @ACCESS Public
- */
+
 export const logoutUser = asyncHandler(async (_req, res, _next) => {
   // Setting the cookie value to null
   res.cookie('token', null, {
-    secure: process.env.NODE_ENV === 'production' ? true : false,
+    secure: true,
     maxAge: 0,
     httpOnly: true,
   });
@@ -154,11 +141,7 @@ export const logoutUser = asyncHandler(async (_req, res, _next) => {
   });
 });
 
-/**
- * @LOGGED_IN_USER_DETAILS
- * @ROUTE @GET {{URL}}/api/v1/user/me
- * @ACCESS Private(Logged in users only)
- */
+
 export const getLoggedInUserDetails = asyncHandler(async (req, res, _next) => {
   // Finding the user using the id from modified req object
   const user = await User.findById(req.user.id);
@@ -170,11 +153,7 @@ export const getLoggedInUserDetails = asyncHandler(async (req, res, _next) => {
   });
 });
 
-/**
- * @FORGOT_PASSWORD
- * @ROUTE @POST {{URL}}/api/v1/user/reset
- * @ACCESS Public
- */
+
 export const forgotPassword = asyncHandler(async (req, res, next) => {
   // Extracting email from request body
   const { email } = req.body;
@@ -239,11 +218,7 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
   }
 });
 
-/**
- * @RESET_PASSWORD
- * @ROUTE @POST {{URL}}/api/v1/user/reset/:resetToken
- * @ACCESS Public
- */
+
 export const resetPassword = asyncHandler(async (req, res, next) => {
   // Extracting resetToken from req.params object
   const { resetToken } = req.params;
@@ -294,11 +269,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
   });
 });
 
-/**
- * @CHANGE_PASSWORD
- * @ROUTE @POST {{URL}}/api/v1/user/change-password
- * @ACCESS Private (Logged in users only)
- */
+
 export const changePassword = asyncHandler(async (req, res, next) => {
   // Destructuring the necessary data from the req object
   const { oldPassword, newPassword } = req.body;
@@ -342,11 +313,7 @@ export const changePassword = asyncHandler(async (req, res, next) => {
   });
 });
 
-/**
- * @UPDATE_USER
- * @ROUTE @POST {{URL}}/api/v1/user/update/:id
- * @ACCESS Private (Logged in user only)
- */
+
 export const updateUser = asyncHandler(async (req, res, next) => {
   // Destructuring the necessary data from the req object
   const { fullName } = req.body;
@@ -400,6 +367,7 @@ export const updateUser = asyncHandler(async (req, res, next) => {
     message: 'User details updated successfully',
   });
 });
+
 
 export const verifyAccount = asyncHandler(async (req, res, next) => {
   const { verificationToken } = req.params;

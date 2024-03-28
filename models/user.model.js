@@ -99,7 +99,7 @@ userSchema.methods = {
   // Will generate a JWT token with user id as payload
   generateJWTToken: async function () {
     return jwt.sign(
-      { id: this._id, role: this.role, name: fullName },
+      { id: this._id, role: this.role, name: this.fullName },
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_EXPIRY,
