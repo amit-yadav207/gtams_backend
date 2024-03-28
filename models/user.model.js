@@ -55,6 +55,16 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    appliedFor: [{
+      applicationId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Application',
+      },
+      formId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Form',
+      }
+    }]
   },
   {
     timestamps: true,
@@ -89,7 +99,7 @@ userSchema.methods = {
   // Will generate a JWT token with user id as payload
   generateJWTToken: async function () {
     return jwt.sign(
-      { id: this._id, role: this.role },
+      { id: this._id, role: this.role, name: fullName },
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_EXPIRY,

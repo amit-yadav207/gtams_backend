@@ -9,16 +9,32 @@ const applicationSchema = new Schema(
         },
         courseId: {
             type: String,
-            unique: true,
+            unique: true, //key to search the application
         },
         instructor: String,
         requiredSkills: String,
         department: String,
-        
+        jobId: {
+            type: String,
+            unique: [true, 'Job Id must be unique.'],
+        },
         createdBy: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-        }
+        },
+        appliedBy: [
+            {
+                user: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'User',
+                },
+                form: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Form',
+                },
+               
+            }
+        ]
     },
     {
         timestamps: true,

@@ -1,0 +1,155 @@
+import asyncHandler from "../middlewares/asyncHandler.middleware";
+import AppError from "../utils/appError";
+import Application from "../models/application.model";
+import { sendEmail } from '../utils/sendEmail.js';
+import Form from "../models/form.model.js";
+import User from "../models/user.model.js";
+
+// export const createApplication = asyncHandler(async (req, res, next) => {
+
+// })
+
+
+
+export const createApplication = asyncHandler(async (req, res, next) => {
+    const { title, courseId, instructor, requiredSkills, department, jobId } = req.body;
+    // const jobId = `${courseId}-${Date.now()}`;
+    //assuming we are sending the jobId from frontend.
+
+    const application = await Application.create({
+        title,
+        courseId,
+        instructor,
+        requiredSkills,
+        department,
+        createdBy: req.user.id,
+        jobId
+    })
+
+    if (!application) {
+        return next(new AppError('Unable to create application.', 505));
+    }
+
+    return res.status(200).json({
+        success: true,
+        application, //should comment this in production
+        message: "Application created successfully",
+    })
+})
+
+
+export const updateApplication = asyncHandler(async (req, res, next) => {
+    const { title, courseId, instructor, requiredSkills, department, jobId } = req.body;
+    const { id } = req.params;
+
+    let application = await Application.findById(id);
+
+    if (!application) {
+        return next(new AppError('Application not found.', 404));
+    }
+
+    // Update the application fields
+    application.title = title;
+    application.courseId = courseId;
+    application.instructor = instructor;
+    application.requiredSkills = requiredSkills;
+    application.department = department;
+    application.jobId = jobId;
+
+    application = await application.save();
+
+    return res.status(200).json({
+        success: true,
+        application, // should remove this line in production
+        message: "Application updated successfully",
+    });
+});
+
+
+
+export const deleteApplication = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+
+    let application = await Application.findById(id);
+
+    if (!application) {
+        return next(new AppError('Application not found.', 404));
+    }
+
+    // Check if the user has permission to delete the application
+    if (application.createdBy.toString() !== req.user.id) {
+        return next(new AppError('You are not authorized to delete this application.', 403));
+    }
+
+    await application.remove();
+
+    return res.status(200).json({
+        success: true,
+        message: "Application deleted successfully",
+    });
+});
+
+
+
+export const applyToApplication = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    let { formData } = req.body;
+
+    const application = await Application.findById(id);
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+        return next(new AppError('User not found.', 404));
+    }
+    if (!application) {
+        return next(new AppError('Application not found.', 404));
+    }
+
+    // Check if the user has already applied
+    const alreadyApplied = application.appliedBy.some(appliedUser =>
+        appliedUser.user.toString() === req.user.id
+    );
+
+    if (alreadyApplied) {
+        return next(new AppError('You have already applied to this application.', 400));
+    }
+
+    // create a form response
+    formData.filledBy = user._id;
+    formData.applicationId = application._id;
+
+    const form = await Form.create(formData);
+
+    if (!form) {
+        return next(new AppError('Error in form submission.', 400));
+    }
+
+    // Add the user's _id to the appliedBy array
+    application.appliedBy.push({
+        user: req.user.id,
+        form: form._id
+    });
+    user.appliedFor.push({
+        applicationId: application._id,
+        formId: form._id
+    })
+    await application.save();
+    await user.save();
+
+
+    //sending email.
+    const emailSubject = "Application Submitted Successfully";
+    const emailMessage = `Hello ${user.name},<br><br>
+    Your application for the position of "${title}" has been submitted successfully for JobID: ${application.jobId} <br><br>
+    You will be notified once a decision has been made.<br><br>
+    Regards,<br>
+    GTAMS Support Team`;
+
+    await sendEmail(user.email, emailSubject, emailMessage);
+
+    return res.status(200).json({
+        success: true,
+        message: "Applied successfully for Job Id " + application.jobId,
+    });
+});
+
