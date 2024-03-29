@@ -5,7 +5,8 @@ import {
     deleteApplication,
     applyToApplication,
     getAllJobs,
-    getApplicationByJobId
+    getApplicationByJobId,
+    getAllJobsByUserId
 } from "../controllers/application.controller.js";
 import { authorizeRoles, isLoggedIn } from "../middlewares/auth.middleware.js";
 
@@ -17,5 +18,6 @@ router.delete('/delete/:id', isLoggedIn, authorizeRoles('DS'), deleteApplication
 router.post('/apply/:id', isLoggedIn, applyToApplication);
 router.post('/getAllJobs', getAllJobs);
 router.post('/getApplicationById/:jobId', getApplicationByJobId);
+router.post('/getAllJobsByUserId',isLoggedIn, getAllJobsByUserId);
 
 export default router;

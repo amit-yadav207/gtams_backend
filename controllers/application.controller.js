@@ -167,7 +167,7 @@ export const getAllJobs = asyncHandler(async (req, res, next) => {
     const jobs = await Application.find({});
     res.status(200).json({
         success: true,
-        message:'Fetched all Jobs',
+        message: 'Fetched all Jobs',
         jobs
     })
 })
@@ -187,3 +187,35 @@ export const getApplicationByJobId = asyncHandler(async (req, res, next) => {
         message: 'Application found.',
     })
 })
+
+
+export const getAllJobsByUserId = asyncHandler(async (req, res, next) => {
+    const id = req.user.id;
+    const user = await User.findById(id)
+        .populate({
+            path: 'appliedFor',
+            populate: [
+                { path: 'applicationId', select: 'title courseId' },
+                { path: 'formId', select: '_id status appliedDate' }
+            ]
+        });
+
+    if (!user) {
+        return next(new AppError('User not found.', 404));
+    }
+
+    // Flatten the applications array
+    const applications = user.appliedFor.map(application => ({
+        title: application.applicationId.title,
+        courseId: application.applicationId.courseId,
+        status: application.formId.status,
+        appliedDate: application.formId.appliedDate,
+        formId: application.formId._id,
+    }));
+
+    res.status(200).json({
+        success: true,
+        message: 'All applications fetched successfully',
+        applications
+    });
+});

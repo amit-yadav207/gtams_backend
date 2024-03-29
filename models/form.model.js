@@ -17,6 +17,7 @@ const formSchema = new Schema(
             enum: ['Accepted', 'Rejected', 'Pending'],
             default: 'Pending',
         },
+        appliedDate: Date,
         // we have to add more form related information.
     },
     {

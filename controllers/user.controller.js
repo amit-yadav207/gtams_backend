@@ -158,17 +158,11 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
   // Extracting email from request body
   const { email } = req.body;
 
-  // If no email send email required message
-  if (!email) {
-    return next(new AppError('Email is required', 400));
-  }
-
-  // Finding the user via email
   const user = await User.findOne({ email });
 
   // If no email found send the message email not found
   if (!user) {
-    return next(new AppError('Email not registered', 400));
+    return next(new AppError('This E-mail not registered', 400));
   }
 
   // Generating the reset token via the method we have in user model
