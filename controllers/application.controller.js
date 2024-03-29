@@ -167,6 +167,7 @@ export const getAllJobs = asyncHandler(async (req, res, next) => {
     const jobs = await Application.find({});
     res.status(200).json({
         success: true,
+        message:'Fetched all Jobs',
         jobs
     })
 })
