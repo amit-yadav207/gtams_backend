@@ -100,7 +100,6 @@ export const deleteApplication = asyncHandler(async (req, res, next) => {
 });
 
 
-
 export const applyToApplication = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     let { formData } = req.body;
@@ -169,5 +168,21 @@ export const getAllJobs = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         jobs
+    })
+})
+
+
+export const getApplicationByJobId = asyncHandler(async (req, res, next) => {
+    const { jobId } = req.params;
+    const application = await Application.findOne({ jobId })
+
+    if (!application) {
+        return next(new AppError('Application not found.', 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        application,
+        message: 'Application found.',
     })
 })
