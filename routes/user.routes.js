@@ -23,7 +23,7 @@ router.get("/profile", isLoggedIn, getLoggedInUserDetails);
 router.post("/reset", forgotPassword);
 router.post("/reset/:resetToken", resetPassword);
 router.post("/change-password", isLoggedIn, changePassword);
-router.put("/update/:id", isLoggedIn, updateUser);
+router.put("/update", isLoggedIn, updateUser);
 router.post("/verify/:verificationToken", verifyAccount);
 
 export default router;

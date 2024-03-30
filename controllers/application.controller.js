@@ -86,7 +86,7 @@ export const deleteApplication = asyncHandler(async (req, res, next) => {
 
         // Check if the user has permission to delete the application
         if (application.createdBy.toString() !== req.user.id) {
-            return next(new AppError('You are not authorized to delete this application.', 403));
+            return next(new AppError(`Only the person who created can delete`, 401));
         }
 
         await application.remove();

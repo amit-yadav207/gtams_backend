@@ -10,7 +10,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'Name is required'],
       minlength: [3, 'Name must be at least 3 characters'],
-      lowercase: true,
+      lowercase: false,
       trim: true, // Removes unnecessary spaces
     },
     email: {
@@ -54,6 +54,10 @@ const userSchema = new Schema(
     signupverified: {
       type: Boolean,
       default: false,
+    },
+    address: {
+      type: String,
+      default: ""
     },
     appliedFor: [{
       applicationId: {
