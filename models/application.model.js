@@ -22,6 +22,10 @@ const applicationSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'User',
         },
+        isApplicationOpen: {
+            type: Boolean,
+            default: true,
+        },
         appliedBy: [
             {
                 user: {
@@ -32,7 +36,7 @@ const applicationSchema = new Schema(
                     type: Schema.Types.ObjectId,
                     ref: 'Form',
                 },
-               
+
             }
         ]
     },

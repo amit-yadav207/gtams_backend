@@ -13,7 +13,7 @@ import User from "../models/user.model.js";
 
 export const createApplication = asyncHandler(async (req, res, next) => {
     try {
-        const { title, courseId, instructor, requiredSkills, department, jobId } = req.body;
+        const { title, courseId, instructor, requiredSkills, department, jobId, isApplicationOpen } = req.body;
         // const jobId = `${courseId}-${Date.now()}`;
         //assuming we are sending the jobId from frontend.
 
@@ -24,7 +24,8 @@ export const createApplication = asyncHandler(async (req, res, next) => {
             requiredSkills,
             department,
             createdBy: req.user.id,
-            jobId
+            jobId,
+            isApplicationOpen
         })
 
         if (!application) {
@@ -44,7 +45,7 @@ export const createApplication = asyncHandler(async (req, res, next) => {
 
 
 export const updateApplication = asyncHandler(async (req, res, next) => {
-    const { title, courseId, instructor, requiredSkills, department, jobId } = req.body;
+    const { title, courseId, instructor, requiredSkills, department, jobId, isApplicationOpen } = req.body;
     const { id } = req.params;
 
     let application = await Application.findById(id);
@@ -60,6 +61,7 @@ export const updateApplication = asyncHandler(async (req, res, next) => {
     application.requiredSkills = requiredSkills;
     application.department = department;
     application.jobId = jobId;
+    application.isApplicationOpen = isApplicationOpen;
 
     application = await application.save();
 
