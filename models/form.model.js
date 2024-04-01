@@ -27,14 +27,31 @@ const formSchema = new Schema(
             type: String,
             required: true
         },
-        departmentId: {
+        department: {
             type: String,
-            required: [true, 'Department Id is required.']
+            required: [true, 'Department is required.']
         },
         courseId: {
             type: String,
             required: [true, 'Course Id is required.']
         },
+        resume: {
+            type: String,
+        },
+        previousExperience: [{
+            course: {
+                type: String,
+                required: true,
+            },
+            fromDate: {
+                type: Date,
+                required: true,
+            },
+            toDate: {
+                type: Date,
+                required: true,
+            }
+        }]
 
     },
     {

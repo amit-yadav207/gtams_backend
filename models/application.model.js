@@ -9,7 +9,7 @@ const applicationSchema = new Schema(
         },
         courseId: {
             type: String,
-            required: true, 
+            required: true,
         },
         instructor: String,
         requiredSkills: String,
@@ -17,6 +17,8 @@ const applicationSchema = new Schema(
         jobId: {
             type: String,
             unique: [true, 'Job Id must be unique.'],
+            trim: true,
+            required: [true,'Job Id is required.'],
         },
         createdBy: {
             type: Schema.Types.ObjectId,
