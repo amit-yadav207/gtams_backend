@@ -45,31 +45,36 @@ export const createApplication = asyncHandler(async (req, res, next) => {
 
 
 export const updateApplication = asyncHandler(async (req, res, next) => {
-    const { title, courseId, instructor, requiredSkills, department, jobId, isApplicationOpen } = req.body;
-    const { id } = req.params;
+    try {
+        const { title, courseId, instructor, requiredSkills, department, jobId, isApplicationOpen } = req.body;
+        const { id } = req.params;
 
-    let application = await Application.findById(id);
+        let application = await Application.findById(id);
 
-    if (!application) {
-        return next(new AppError('Application not found.', 404));
+        if (!application) {
+            return next(new AppError('Application not found.', 404));
+        }
+
+        // Update the application fields
+        application.title = title;
+        application.courseId = courseId;
+        application.instructor = instructor;
+        application.requiredSkills = requiredSkills;
+        application.department = department;
+        application.jobId = jobId;
+        application.isApplicationOpen = isApplicationOpen;
+
+        application = await application.save();
+
+        return res.status(200).json({
+            success: true,
+            application, // should remove this line in production
+            message: "Application updated successfully",
+        });
+    } catch (err) {
+        console.error(err);
     }
 
-    // Update the application fields
-    application.title = title;
-    application.courseId = courseId;
-    application.instructor = instructor;
-    application.requiredSkills = requiredSkills;
-    application.department = department;
-    application.jobId = jobId;
-    application.isApplicationOpen = isApplicationOpen;
-
-    application = await application.save();
-
-    return res.status(200).json({
-        success: true,
-        application, // should remove this line in production
-        message: "Application updated successfully",
-    });
 });
 
 

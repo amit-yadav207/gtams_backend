@@ -6,7 +6,7 @@ const departmentSchema = new Schema({
         type: String,
         required: true
     },
-    code: {
+    departmentId: {
         type: String,
         required: true,
         unique: true

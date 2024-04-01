@@ -13,7 +13,7 @@ import { authorizeRoles, isLoggedIn } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 router.post('/create', isLoggedIn, authorizeRoles('DS'), createApplication);
-router.patch('/update/:id', isLoggedIn, authorizeRoles('DS'), updateApplication);
+router.put('/update/:id', isLoggedIn, authorizeRoles('DS'), updateApplication);
 router.delete('/delete/:id', isLoggedIn, authorizeRoles('DS'), deleteApplication);
 router.post('/apply/:id', isLoggedIn, applyToApplication);
 router.post('/getAllJobs', getAllJobs);

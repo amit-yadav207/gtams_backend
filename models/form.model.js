@@ -19,6 +19,23 @@ const formSchema = new Schema(
         },
         appliedDate: Date,
         // we have to add more form related information.
+        applicantName: {
+            type: String,
+            required: true
+        },
+        email: {
+            type: String,
+            required: true
+        },
+        departmentId: {
+            type: String,
+            required: [true, 'Department Id is required.']
+        },
+        courseId: {
+            type: String,
+            required: [true, 'Course Id is required.']
+        },
+
     },
     {
         timestamps: true,
