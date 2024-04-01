@@ -1,60 +1,34 @@
 import { model, Schema } from 'mongoose';
 
-const courseSchema = new Schema(
-  {
-    title: {
-      type: String,
-      required: [true, 'Title is required'],
-      minlength: [8, 'Title must be atleast 8 characters'],
-      maxlength: [50, 'Title cannot be more than 50 characters'],
-      trim: true,
-    },
-    description: {
-      type: String,
-      required: [true, 'Description is required'],
-      minlength: [20, 'Description must be atleast 20 characters long'],
-    },
-    category: {
-      type: String,
-      required: [true, 'Category is required'],
-    },
-    lectures: [
-      {
-        title: String,
-        description: String,
-        lecture: {
-          public_id: {
-            type: String,
-            required: true,
-          },
-          secure_url: {
-            type: String,
-            required: true,
-          },
-        },
-      },
-    ],
-    thumbnail: {
-      public_id: {
-        type: String,
-      },
-      secure_url: {
-        type: String,
-      },
-    },
-    numberOfLectures: {
-      type: Number,
-      default: 0,
-    },
-    createdBy: {
-      type: String,
-      required: [true, 'Course instructor name is required'],
-    },
+
+const courseSchema = new Schema({
+  name: {
+    type: String,
+    required: true
   },
-  {
-    timestamps: true,
-  }
-);
+  code: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  description: String,
+  department: {
+    type: Schema.Types.ObjectId,
+    ref: 'Department'
+  },
+  creditHours: {
+    type: Number,
+    required: true
+  },
+  instructors: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Employee'
+  }],
+  ta: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }]
+});
 
 const Course = model('Course', courseSchema);
 

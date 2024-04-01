@@ -9,7 +9,7 @@ const applicationSchema = new Schema(
         },
         courseId: {
             type: String,
-            unique: true, //key to search the application
+            required: true, 
         },
         instructor: String,
         requiredSkills: String,
