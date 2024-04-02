@@ -7,6 +7,6 @@ const router = Router();
 
 // router.post('/create', isLoggedIn, authorizeRoles('DS'), createApplication);
 
-router.post('/application/:jobId', isLoggedIn, authorizeRoles('USER'),getFormResponseByJobId );
+router.post('/:jobId', isLoggedIn, authorizeRoles('USER'),getFormResponseByJobId );
 
 export default router;
