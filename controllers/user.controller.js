@@ -22,7 +22,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
   if (!fullName || !email || !password || !phone) {
     return next(new AppError('All fields are required', 408));
   }
-  var userExists = await User.findOne({ email });
+  let userExists = await User.findOne({ email });
 
   if (userExists) {
 

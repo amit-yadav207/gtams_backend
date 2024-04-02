@@ -4,7 +4,8 @@ import Application from "../models/application.model.js";
 import { sendEmail } from '../utils/sendEmail.js';
 import Form from "../models/form.model.js";
 import User from "../models/user.model.js";
-
+import { v2 as cloudinary } from 'cloudinary';
+import fs from 'fs';
 // export const createApplication = asyncHandler(async (req, res, next) => {
 
 // })
@@ -117,15 +118,25 @@ export const applyToApplication = asyncHandler(async (req, res, next) => {
     try {
         const { id } = req.params;
         let formData = req.body;
-        console.log(formData)
+        const file = req.file;
 
         const application = await Application.findOne({ jobId: id });
         const user = await User.findById(req.user.id);
 
         if (!user) {
+            fs.unlink(file.path, (err) => {
+                if (err) {
+                    console.error('Error deleting file:', err);
+                }
+            });
             return next(new AppError('User not found.', 404));
         }
         if (!application) {
+            fs.unlink(file.path, (err) => {
+                if (err) {
+                    console.error('Error deleting file:', err);
+                }
+            });
             return next(new AppError('Application not found.', 404));
         }
 
@@ -135,6 +146,11 @@ export const applyToApplication = asyncHandler(async (req, res, next) => {
         );
 
         if (alreadyApplied) {
+            fs.unlink(file.path, (err) => {
+                if (err) {
+                    console.error('Error deleting file:', err);
+                }
+            });
             return next(new AppError('You have already applied to this application.', 400));
         }
 
@@ -143,10 +159,56 @@ export const applyToApplication = asyncHandler(async (req, res, next) => {
         formData.applicationId = application._id;
         formData.department = application.department;
         formData.courseId = application.courseId;
+        formData.formId = id[0] + id[1] + new Date();
+        formData.previousExperience = JSON.parse(formData.previousExperience);
+
+        //file upload.
+
+        if (!file) {
+            return next(new AppError('No resume uploaded.', 403));
+        }
+
+        try {
+            // Upload file to Cloudinary
+            const result = await cloudinary.uploader.upload(file.path, {
+                folder: 'resume',
+            });
+
+            // Clear file buffer from memory
+            file.buffer = null;
+
+            // Update formData with Cloudinary URL and other file details
+            formData.resume = {
+                fileName: `${new Date().getTime()}-${file.originalname}`,
+                cloudinaryUrl: result.secure_url,
+                size: file.size,
+            };
+
+            // remove file from local system
+            fs.unlink(file.path, (err) => {
+                if (err) {
+                    console.error('Error deleting file:', err);
+                }
+            });
+        } catch (err) {
+            // Handle upload error
+            console.error(err);
+            fs.unlink(file.path, (err) => {
+                if (err) {
+                    console.error('Error deleting file:', err);
+                }
+            });
+            return next(new AppError('Error uploading your file, Please try again', 400));
+        }
 
         const form = await Form.create(formData);
 
         if (!form) {
+            fs.unlink(file.path, (err) => {
+                if (err) {
+                    console.error('Error deleting file:', err);
+                }
+            });
             return next(new AppError('Error in form submission.', 400));
         }
 
@@ -162,7 +224,6 @@ export const applyToApplication = asyncHandler(async (req, res, next) => {
         await application.save();
         await user.save();
 
-
         //sending email.
         const emailSubject = "Application Submitted Successfully";
         const emailMessage = `Hello ${user.fullName},<br><br>
@@ -176,10 +237,21 @@ export const applyToApplication = asyncHandler(async (req, res, next) => {
         return res.status(200).json({
             success: true,
             message: "Applied successfully for Job Id " + application.jobId,
+            form,
         });
-    } catch (err) { console.log(err) }
+    } catch (err) {
+        // Handle other errors
+        console.error(err);
+        fs.unlink(file.path, (err) => {
+            if (err) {
+                console.error('Error deleting file:', err);
+            }
+        });
+        return next(new AppError('Error in application', 404));
+    }
 
 });
+
 
 
 export const getAllJobs = asyncHandler(async (req, res, next) => {

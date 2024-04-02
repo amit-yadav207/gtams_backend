@@ -23,6 +23,9 @@ const formSchema = new Schema(
             type: String,
             required: true
         },
+        formId: {
+            type: String,
+        },
         email: {
             type: String,
             required: true
@@ -34,9 +37,6 @@ const formSchema = new Schema(
         courseId: {
             type: String,
             required: [true, 'Course Id is required.']
-        },
-        resume: {
-            type: String,
         },
         previousExperience: [{
             course: {
@@ -51,7 +51,20 @@ const formSchema = new Schema(
                 type: Date,
                 required: true,
             }
-        }]
+        }],
+        resume: {
+            fileName: {
+                type: String,
+                required: true,
+            },
+            cloudinaryUrl: {
+                type: String,
+                required: true
+            },
+            size: {
+                type:Number,
+            }
+        }
 
     },
     {
