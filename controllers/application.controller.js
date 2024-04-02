@@ -159,7 +159,7 @@ export const applyToApplication = asyncHandler(async (req, res, next) => {
         formData.applicationId = application._id;
         formData.department = application.department;
         formData.courseId = application.courseId;
-        formData.formId = id[0] + id[1] + new Date();
+        formData.formId = id[0] + id[1] + new Date().getTime();
         formData.previousExperience = JSON.parse(formData.previousExperience);
 
         //file upload.
