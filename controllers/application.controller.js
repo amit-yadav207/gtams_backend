@@ -286,7 +286,7 @@ export const getAllJobsByUserId = asyncHandler(async (req, res, next) => {
         .populate({
             path: 'appliedFor',
             populate: [
-                { path: 'applicationId', select: 'title courseId' },
+                { path: 'applicationId', select: 'title courseId jobId isApplicationOpen' },
                 { path: 'formId', select: '_id status appliedDate' }
             ]
         });
@@ -302,6 +302,7 @@ export const getAllJobsByUserId = asyncHandler(async (req, res, next) => {
         status: application.formId.status,
         appliedDate: application.formId.appliedDate,
         formId: application.formId._id,
+        jobId:application.applicationId.jobId
     }));
 
     res.status(200).json({
