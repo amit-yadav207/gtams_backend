@@ -10,32 +10,56 @@ import User from "../models/user.model.js";
 
 // })
 
-
 export const getFormResponseByJobId = asyncHandler(async (req, res, next) => {
     const { jobId } = req.params;
-    const id = req.user.id;
+    const userId = req.user.id;
 
-    const user = await User.findById(id);
-
+    const user = await User.findById(userId);
 
     if (!user) {
         return next(new AppError("User not found.", 404));
     }
 
-    const formId = await Application.findOne({ jobId, 'appliedBy.user': user._id }).select('appliedBy.form');
+    try {
+        const form = await Application.aggregate([
+            {
+                $match: { jobId, 'appliedBy.user': user._id }
+            },
+            {
+                $unwind: '$appliedBy'
+            },
+            {
+                $match: { 'appliedBy.user': user._id }
+            },
+            {
+                $project: {
+                    form: '$appliedBy.form'
+                }
+            }
+        ]);
 
-    const form = await Form.findById(formId);
+        if (!form || form.length === 0 || !form[0].form) {
+            return next(new AppError("Response not found.", 404));
+        }
 
-    if (!form) {
-        return next(new AppError("Response not found.", 404));
+        const formId = form[0].form;
+
+        const responseForm = await Form.findById(formId);
+
+        if (!responseForm) {
+            return next(new AppError("Response form not found.", 404));
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Response fetched.',
+            form: responseForm
+        });
+    } catch (error) {
+        console.error(error);
+        return next(new AppError("Error fetching response.", 500));
     }
-
-    res.status(200).json({
-        success: true,
-        message: 'Response fetched.',
-        form
-    });
-})
+});
 
 
 // export const createApplication = asyncHandler(async (req, res, next) => {
