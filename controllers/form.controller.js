@@ -12,7 +12,7 @@ import User from "../models/user.model.js";
 
 
 export const getFormResponseByJobId = asyncHandler(async (req, res, next) => {
-    const { jobId } = req.pram;
+    const { jobId } = req.params;
     const id = req.user.id;
 
     const user = await User.findById(id);
