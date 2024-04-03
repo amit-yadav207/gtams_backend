@@ -33,7 +33,8 @@ export const getFormResponseByJobId = asyncHandler(async (req, res, next) => {
             },
             {
                 $project: {
-                    form: '$appliedBy.form'
+                    form: '$appliedBy.form',
+                    title: '$title',
                 }
             }
         ]);
@@ -44,7 +45,7 @@ export const getFormResponseByJobId = asyncHandler(async (req, res, next) => {
 
         const formId = form[0].form;
 
-        const responseForm = await Form.findById(formId);
+        let responseForm = await Form.findById(formId);
 
         if (!responseForm) {
             return next(new AppError("Response form not found.", 404));
@@ -53,13 +54,15 @@ export const getFormResponseByJobId = asyncHandler(async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: 'Response fetched.',
-            form: responseForm
+            form: responseForm,
+            jobTitle: form[0].title
         });
     } catch (error) {
         console.error(error);
         return next(new AppError("Error fetching response.", 500));
     }
 });
+
 
 
 // export const createApplication = asyncHandler(async (req, res, next) => {
