@@ -34,6 +34,7 @@ const formSchema = new Schema(
             type: Number
         },
         address: String,
+        gender: String,
         department: {
             type: String,
             required: [true, 'Department is required.']
