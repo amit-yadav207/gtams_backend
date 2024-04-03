@@ -30,6 +30,10 @@ const formSchema = new Schema(
             type: String,
             required: true
         },
+        phone: {
+            type: Number
+        },
+        address: String,
         department: {
             type: String,
             required: [true, 'Department is required.']
@@ -62,7 +66,7 @@ const formSchema = new Schema(
                 required: true
             },
             size: {
-                type:Number,
+                type: Number,
             }
         }
 
