@@ -10,7 +10,7 @@ import {
 } from '../controllers/course.controller.js';
 import {
   authorizeRoles,
-  authorizeSubscribers,
+  // authorizeSubscribers,
   isLoggedIn,
 } from '../middlewares/auth.middleware.js';
 import upload from '../middlewares/multer.middleware.js';
@@ -52,7 +52,7 @@ router
 
 router
   .route('/:id')
-  .get(isLoggedIn, authorizeSubscribers, getLecturesByCourseId) // Added authorizeSubscribers to check if user is admin or subscribed if not then forbid the access to the lectures
+  // .get(isLoggedIn, authorizeSubscribers, getLecturesByCourseId) // Added authorizeSubscribers to check if user is admin or subscribed if not then forbid the access to the lectures
   .post(
     isLoggedIn,
     authorizeRoles('ADMIN'),

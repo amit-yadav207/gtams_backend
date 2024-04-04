@@ -71,7 +71,7 @@ export const getAllFormResponseByJobId = asyncHandler(async (req, res, next) => 
         const application = await Application.findOne({ jobId });
 
         if (!application) {
-            return next(new AppError('Application not found',409));
+            return next(new AppError('Application not found', 409));
         }
 
         // get all the fromIds of response received on that requested application. 
@@ -86,13 +86,58 @@ export const getAllFormResponseByJobId = asyncHandler(async (req, res, next) => 
         res.status(200).json({
             success: true,
             forms: filteredForms,
-            message:'From data fetched successfully.'
+            message: 'From data fetched successfully.'
         });
     } catch (err) {
         console.log(err);
         return next(new AppError('Error occured.', 505));
     }
 
+})
+
+
+export const changeFormStatusByFormId = asyncHandler(async (req, res, next) => {
+    const { id } = req.body;
+
+    const form = await Form.findById(id);
+
+    if (!form) {
+        return next(new AppError('The response is not found.', 404));
+    }
+
+    form.status = 'Forwarded';
+    await form.save();
+
+    res.status(201).json({
+        success: true,
+        message: "Forwarded successfully."
+    })
+})
+
+
+export const rejectFromByFormId = asyncHandler(async (req, res, next) => {
+    const { id } = req.body;
+
+    const form = await Form.findById(id);
+
+    if (!form) {
+        return next(new AppError('The response is not found.', 404));
+    }
+
+    form.status = 'Rejected';
+
+    await sendEmail(
+        form.email,
+        `Update regarding your from ID ${form.formId}.`,
+        'We are not moving forward with your application this time.'
+    );
+    
+    await form.save();
+
+    res.status(201).json({
+        success: true,
+        message: "Rejected successfully."
+    })
 })
 
 

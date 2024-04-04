@@ -14,7 +14,7 @@ const formSchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['Accepted', 'Rejected', 'Pending'],
+            enum: ['Accepted', 'Rejected', 'Pending', 'Forwarded'],
             default: 'Pending',
         },
         appliedDate: Date,
