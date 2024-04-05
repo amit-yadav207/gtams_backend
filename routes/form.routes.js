@@ -15,6 +15,7 @@ const router = Router();
 router.post('/getUserFormResponseByJobId/:jobId', isLoggedIn, authorizeRoles('USER'), getUserFormResponseByJobId);
 router.post('/getAllFormResponseByJobId/:jobId', isLoggedIn, authorizeRoles('DS'), getAllFormResponseByJobId);
 router.post('/changeFormStatusByFormId', isLoggedIn, authorizeRoles('DS'), changeFormStatusByFormId);
+router.post('/changeFormStatusToAcceptedByFormId', isLoggedIn, authorizeRoles('DS'), changeFormStatusByFormId);
 router.post('/rejectFromByFormId', isLoggedIn, rejectFromByFormId);
 
 

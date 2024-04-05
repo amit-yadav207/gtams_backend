@@ -47,6 +47,10 @@ const userSchema = new Schema(
       enum: ['USER', 'DS', 'TACM', 'INS', , 'ADMIN'],
       default: 'USER',
     },
+    department: {
+      type: Schema.Types.ObjectId,
+      ref: 'Department',
+    },
     forgotPasswordToken: String,
     forgotPasswordExpiry: Date,
     signupToken: String,

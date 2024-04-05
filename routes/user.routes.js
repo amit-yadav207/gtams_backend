@@ -1,6 +1,8 @@
 import { Router } from "express";
 import {
   changePassword,
+  createUser,
+  deleteUser,
   forgotPassword,
   getLoggedInUserDetails,
   loginUser,
@@ -10,7 +12,7 @@ import {
   updateUser,
   verifyAccount
 } from "../controllers/user.controller.js";
-import { isLoggedIn } from "../middlewares/auth.middleware.js";
+import { authorizeRoles, isLoggedIn } from "../middlewares/auth.middleware.js";
 // import upload from "../middlewares/multer.middleware.js";
 
 const router = Router();
@@ -25,5 +27,10 @@ router.post("/reset/:resetToken", resetPassword);
 router.post("/change-password", isLoggedIn, changePassword);
 router.put("/update", isLoggedIn, updateUser);
 router.post("/verify/:verificationToken", verifyAccount);
+
+
+router.post("/create", isLoggedIn, authorizeRoles('ADMIN'), createUser);
+router.post("/delete", isLoggedIn, authorizeRoles('ADMIN'), deleteUser);
+
 
 export default router;
