@@ -427,12 +427,12 @@ export const createUser = asyncHandler(async (req, res, next) => {
 
 
 export const deleteUser = asyncHandler(async (req, res, next) => {
-  const id = req.body;
-
-  const result = await User.findByIdAndDelete({ _id: id });
-
-  if (result.deletedCount === 0) {
-    return next(new AppError('User not created.', 404));
+  const { id } = req.body;
+  // console.log(req.body)
+  const result = await User.findByIdAndDelete(id);
+  // console.log('result is', result);
+  if (!result) {
+    return next(new AppError('User not found.', 404));
   }
 
   res.status(200).json({
@@ -442,3 +442,13 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
   });
 });
 
+
+export const getAllUser = asyncHandler(async (req, res, next) => {
+  const users = await User.find({});
+
+  res.status(200).json({
+    success: true,
+    message: 'Users fetched successfully.',
+    users
+  });
+});

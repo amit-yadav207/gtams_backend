@@ -31,7 +31,7 @@ const userSchema = new Schema(
     },
     phone: {
       type: String,
-      required: true,
+      // required: [true,'Phone number is required'],
       minlength: [10, 'Phone number too small'],
     },
     avatar: {
@@ -48,8 +48,9 @@ const userSchema = new Schema(
       default: 'USER',
     },
     department: {
-      type: Schema.Types.ObjectId,
-      ref: 'Department',
+      // type: Schema.Types.ObjectId,
+      // ref: 'Department',
+      type:String
     },
     forgotPasswordToken: String,
     forgotPasswordExpiry: Date,

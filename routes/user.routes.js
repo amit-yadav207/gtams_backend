@@ -4,6 +4,7 @@ import {
   createUser,
   deleteUser,
   forgotPassword,
+  getAllUser,
   getLoggedInUserDetails,
   loginUser,
   logoutUser,
@@ -29,8 +30,11 @@ router.put("/update", isLoggedIn, updateUser);
 router.post("/verify/:verificationToken", verifyAccount);
 
 
-router.post("/create", isLoggedIn, authorizeRoles('ADMIN'), createUser);
-router.post("/delete", isLoggedIn, authorizeRoles('ADMIN'), deleteUser);
-
+// router.post("/create", isLoggedIn, authorizeRoles('ADMIN'), createUser);
+router.post("/create", isLoggedIn,  createUser);
+// router.post("/delete", isLoggedIn, authorizeRoles('ADMIN'), deleteUser);
+router.post("/delete", isLoggedIn, deleteUser);
+// router.post("/getAllUser", isLoggedIn, authorizeRoles('ADMIN'), getAllUser)
+router.post("/getAllUser", isLoggedIn, getAllUser)
 
 export default router;

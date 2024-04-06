@@ -35,3 +35,11 @@ export const deleteDepartment = asyncHandler(async (req, res, next) => {
     });
 });
 
+export const getAllDepartment = asyncHandler(async (req, res, next) => {
+    const departments = await Department.find();
+    res.status(200).json({
+        success: true,
+        message: 'Department list fetched successfully.',
+        departments
+    });
+});
