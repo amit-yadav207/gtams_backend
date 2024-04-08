@@ -4,17 +4,21 @@ import { model, Schema } from 'mongoose';
 const departmentSchema = new Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
     },
     departmentId: {
         type: String,
         required: true,
         unique: true
     },
-    description: String,
     employees: [{
         type: Schema.Types.ObjectId,
         ref: 'Employee'
+    }],
+    courses: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Course'
     }]
 });
 
