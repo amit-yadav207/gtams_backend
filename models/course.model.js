@@ -18,7 +18,7 @@ const courseSchema = new Schema({
   },
   creditHours: {
     type: Number,
-    required: true
+    // required: true
   },
   instructors: [{
     type: Schema.Types.ObjectId,
