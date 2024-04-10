@@ -23,11 +23,11 @@ export const getAllCourses = asyncHandler(async (_req, res, next) => {
 export const createCourse = asyncHandler(async (req, res, next) => {
   const formData = req.body;
   const department = await Department.findById(formData.department);
- 
+
   if (!department) {
     return next(new AppError('Department with department code not found', 404));
   }
-  
+
   // department
   const course = await Course.create(formData);
 
@@ -56,6 +56,19 @@ export const deleteCourseById = asyncHandler(async (req, res, next) => {
   if (!course) {
     return next(new AppError('Course with given id does not exist.', 404));
   }
+  const department = await Department.findById(course.department);
+
+  if (!department) {
+    return next(new AppError('Department with department code not found', 404));
+  }
+
+  // Remove course reference from department.courses
+  const courseIndex = department.courses.indexOf(course._id);
+  if (courseIndex !== -1) {
+    department.courses.splice(courseIndex, 1);
+  }
+
+  await department.save();
 
   await course.remove();
 
@@ -64,7 +77,6 @@ export const deleteCourseById = asyncHandler(async (req, res, next) => {
     message: 'Course deleted successfully',
   });
 });
-
 
 export const getAllCourseName = asyncHandler(async (req, res, next) => {
   const courses = await Course.find().select('_id name courseId');
