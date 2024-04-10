@@ -13,7 +13,7 @@ const router = Router();
 // router.post('/create', isLoggedIn, authorizeRoles('DS'), createApplication);
 
 router.post('/getUserFormResponseByJobId/:jobId', isLoggedIn, authorizeRoles('USER'), getUserFormResponseByJobId);
-router.post('/getAllFormResponseByJobId/:jobId', isLoggedIn, authorizeRoles('DS'), getAllFormResponseByJobId);
+router.post('/getAllFormResponseByJobId/:jobId', isLoggedIn, authorizeRoles('DS','TACM'), getAllFormResponseByJobId);
 router.post('/changeFormStatusByFormId', isLoggedIn, authorizeRoles('DS'), changeFormStatusByFormId);
 router.post('/changeFormStatusToAcceptedByFormId', isLoggedIn, authorizeRoles('DS'), changeFormStatusByFormId);
 router.post('/rejectFromByFormId', isLoggedIn, rejectFromByFormId);
