@@ -7,6 +7,7 @@ import asyncHandler from '../middlewares/asyncHandler.middleware.js';
 import AppError from '../utils/appError.js';
 import User from '../models/user.model.js';
 import { sendEmail } from '../utils/sendEmail.js';
+import Application from '../models/application.model.js';
 
 const cookieOptions = {
   secure: true,
@@ -311,7 +312,7 @@ export const changePassword = asyncHandler(async (req, res, next) => {
 export const updateUser = asyncHandler(async (req, res, next) => {
   try {
     // Destructuring the necessary data from the req object
-    const { fullName, contact, address,phone } = req.body;
+    const { fullName, contact, address, phone } = req.body;
     // const { id } = req.user.id;
     // console.log(req.user);
 
@@ -451,5 +452,16 @@ export const getAllUser = asyncHandler(async (req, res, next) => {
     success: true,
     message: 'Users fetched successfully.',
     users
+  });
+});
+
+// getInstructorList
+export const getInstructorList = asyncHandler(async (req, res, next) => {
+  const instructors = await User.find({ role: 'INS' }).select('_id fullName department');
+
+  res.status(200).json({
+    success: true,
+    message: 'INS fetched successfully.',
+    instructors
   });
 });

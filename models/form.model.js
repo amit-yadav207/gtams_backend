@@ -69,7 +69,11 @@ const formSchema = new Schema(
             size: {
                 type: Number,
             }
-        }
+        },
+        instructor: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+        },
 
     },
     {

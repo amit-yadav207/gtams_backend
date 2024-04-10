@@ -131,7 +131,7 @@ export const rejectFromByFormId = asyncHandler(async (req, res, next) => {
         `Update regarding your from ID ${form.formId}.`,
         'We are not moving forward with your application this time.'
     );
-    
+
     await form.save();
 
     res.status(201).json({
@@ -140,6 +140,38 @@ export const rejectFromByFormId = asyncHandler(async (req, res, next) => {
     })
 })
 
+
+
+export const acceptFromByFormId = asyncHandler(async (req, res, next) => {
+    const { id, instructor } = req.body;
+
+    const form = await Form.findById(id);
+
+    if (!form) {
+        return next(new AppError('The response is not found.', 404));
+    }
+
+    form.status = 'Accepted';
+    form.instructor = instructor;
+
+    const emailSubject = `Update Regarding Your Form ID ${form.formId}`;
+    const emailBody = `Dear ${form.applicantName},\n\nWe are pleased to inform you that your form with ID ${form.formId} has been reviewed and accepted.\n\nIf you have any questions or need further assistance, please feel free to reach out to us. We are here to help!\n\nThank you once again for choosing us.\n\nBest regards,\n`;
+
+
+    try {
+        await sendEmail(form.email, emailSubject, emailBody);
+    } catch (error) {
+        console.error('Error sending email:', error);
+        return next(new AppError('Error sending email.', 500));
+    }
+
+    await form.save();
+
+    res.status(201).json({
+        success: true,
+        message: "Accepted successfully."
+    })
+})
 
 // export const createApplication = asyncHandler(async (req, res, next) => {
 

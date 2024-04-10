@@ -11,7 +11,8 @@ import {
   registerUser,
   resetPassword,
   updateUser,
-  verifyAccount
+  verifyAccount,
+  getInstructorList
 } from "../controllers/user.controller.js";
 import { authorizeRoles, isLoggedIn } from "../middlewares/auth.middleware.js";
 // import upload from "../middlewares/multer.middleware.js";
@@ -35,6 +36,7 @@ router.post("/create", isLoggedIn,  createUser);
 // router.post("/delete", isLoggedIn, authorizeRoles('ADMIN'), deleteUser);
 router.post("/delete", isLoggedIn, deleteUser);
 // router.post("/getAllUser", isLoggedIn, authorizeRoles('ADMIN'), getAllUser)
-router.post("/getAllUser", isLoggedIn, getAllUser)
+router.post("/getAllUser", isLoggedIn, getAllUser);
 
+router.post('/getInstructorList', isLoggedIn, getInstructorList);
 export default router;
