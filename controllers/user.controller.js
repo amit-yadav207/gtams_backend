@@ -311,7 +311,7 @@ export const changePassword = asyncHandler(async (req, res, next) => {
 export const updateUser = asyncHandler(async (req, res, next) => {
   try {
     // Destructuring the necessary data from the req object
-    const { fullName, contact, address } = req.body;
+    const { fullName, contact, address,phone } = req.body;
     // const { id } = req.user.id;
     // console.log(req.user);
 
@@ -324,6 +324,7 @@ export const updateUser = asyncHandler(async (req, res, next) => {
     user.fullName = fullName;
     user.contact = contact;
     user.address = address;
+    user.phone = phone;
 
     // // Run only if user sends a file
     // if (req.file) {
