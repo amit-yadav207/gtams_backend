@@ -33,6 +33,8 @@ const userSchema = new Schema(
       type: String,
       // required: [true,'Phone number is required'],
       minlength: [10, 'Phone number too small'],
+      required: true,
+      default: '1234567890'
     },
     avatar: {
       public_id: {
@@ -50,7 +52,7 @@ const userSchema = new Schema(
     department: {
       // type: Schema.Types.ObjectId,
       // ref: 'Department',
-      type:String
+      type: String
     },
     forgotPasswordToken: String,
     forgotPasswordExpiry: Date,
