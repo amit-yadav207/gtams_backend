@@ -14,7 +14,7 @@ import fs from 'fs';
 
 export const createApplication = asyncHandler(async (req, res, next) => {
     try {
-        console.log('req body\n:',req.body)
+        // console.log('req body\n:',req.body)
         const { title, courseId, instructor, requiredSkills, department, jobId, isApplicationOpen } = req.body;
         // const jobId = `${courseId}-${Date.now()}`;
         //assuming we are sending the jobId from frontend.
