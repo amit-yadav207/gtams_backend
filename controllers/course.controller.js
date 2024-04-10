@@ -64,3 +64,13 @@ export const deleteCourseById = asyncHandler(async (req, res, next) => {
     message: 'Course deleted successfully',
   });
 });
+
+
+export const getAllCourseName = asyncHandler(async (req, res, next) => {
+  const courses = await Course.find().select('_id name courseId');
+  res.status(200).json({
+    success: true,
+    message: 'Course names fetched successfully.',
+    courses
+  });
+});

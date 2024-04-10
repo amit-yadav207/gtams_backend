@@ -46,7 +46,7 @@ export const getAllDepartment = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllDepartmentsName = asyncHandler(async (req, res, next) => {
-    const departments = await Department.find().select('_id name');
+    const departments = await Department.find().select('_id name departmentId');
     res.status(200).json({
         success: true,
         message: 'Department names fetched successfully.',
