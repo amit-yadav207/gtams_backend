@@ -40,13 +40,15 @@ import miscRoutes from './routes/miscellaneous.routes.js';
 import applicationRoutes from './routes/application.routes.js';
 import formRoutes from './routes/form.routes.js';
 import departmentRoutes from './routes/department.routes.js';
+import evaluationRoutes from './routes/evaluation.routes.js';
 
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/course', courseRoutes);
 app.use('/api/v1/application', applicationRoutes);
 app.use('/api/v1', miscRoutes);
 app.use('/api/v1/form', formRoutes)
-app.use('/api/v1/department',departmentRoutes )
+app.use('/api/v1/department', departmentRoutes)
+app.use('/api/v1/evaluation', evaluationRoutes)
 
 // Default catch all route - 404
 app.all('*', (_req, res) => {

@@ -5,7 +5,10 @@ import {
     getAllFormResponseByJobId,
     changeFormStatusByFormId,
     rejectFromByFormId,
-    acceptFromByFormId
+    acceptFromByFormId,
+    offeredByDS,
+    acceptByTa,
+
 } from "../controllers/form.controller.js";
 const router = Router();
 
@@ -17,8 +20,10 @@ router.post('/getUserFormResponseByJobId/:jobId', isLoggedIn, authorizeRoles('US
 router.post('/getAllFormResponseByJobId/:jobId', isLoggedIn, authorizeRoles('DS', 'TACM'), getAllFormResponseByJobId);
 router.post('/changeFormStatusByFormId', isLoggedIn, authorizeRoles('DS'), changeFormStatusByFormId);
 router.post('/changeFormStatusToAcceptedByFormId', isLoggedIn, authorizeRoles('DS'), changeFormStatusByFormId);
-router.post('/rejectFromByFormId', isLoggedIn, rejectFromByFormId);
+router.post('/rejectFromByFormId', isLoggedIn, authorizeRoles('DS', 'TACM'), rejectFromByFormId);
 router.post('/accept', isLoggedIn, authorizeRoles('TACM'), acceptFromByFormId);
+router.post('/accept-ds', isLoggedIn, authorizeRoles('DS'), offeredByDS);
+router.post('/accept-ta', isLoggedIn, authorizeRoles('USER'), acceptByTa);
 
 
 export default router;

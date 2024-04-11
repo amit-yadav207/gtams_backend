@@ -4,6 +4,8 @@ import Application from "../models/application.model.js";
 import { sendEmail } from '../utils/sendEmail.js';
 import Form from "../models/form.model.js";
 import User from "../models/user.model.js";
+import Evaluation from "../models/evaluation.model.js";
+import Course from "../models/course.model.js";
 
 
 // export const createApplication = asyncHandler(async (req, res, next) => {
@@ -141,7 +143,6 @@ export const rejectFromByFormId = asyncHandler(async (req, res, next) => {
 })
 
 
-
 export const acceptFromByFormId = asyncHandler(async (req, res, next) => {
     const { id, instructor } = req.body;
 
@@ -151,11 +152,34 @@ export const acceptFromByFormId = asyncHandler(async (req, res, next) => {
         return next(new AppError('The response is not found.', 404));
     }
 
-    form.status = 'Accepted';
+    form.status = 'Assigned to Instructor';
     form.instructor = instructor;
 
+    await form.save();
+
+    res.status(201).json({
+        success: true,
+        message: "Accepted successfully."
+    })
+})
+
+
+export const offeredByDS = asyncHandler(async (req, res, next) => {
+    const { id, jobId } = req.body;
+
+    const form = await Form.findById(id);
+
+    if (!form) {
+        return next(new AppError('The response is not found.', 404));
+    }
+    form.status = 'Offer Pending';
+
+
     const emailSubject = `Update Regarding Your Form ID ${form.formId}`;
-    const emailBody = `Dear ${form.applicantName},\n\nWe are pleased to inform you that your form with ID ${form.formId} has been reviewed and accepted.\n\nIf you have any questions or need further assistance, please feel free to reach out to us. We are here to help!\n\nThank you once again for choosing us.\n\nBest regards,\n`;
+    const emailBody = `Dear ${form.applicantName},\n\nWe are pleased to inform you that your form with ID ${form.formId} has been reviewed and accepted.
+    \n\nNow to confirm your interest in this opening please visit this <a href=${process.env.FRONTEND_URL}/applications/${jobId}>Link</a>.
+    \n\nIf you have any questions or need further assistance, please feel free to reach out to us. We are here to help!\n\nThank you once again for choosing us.
+    \n\nBest regards,\n`;
 
 
     try {
@@ -169,9 +193,67 @@ export const acceptFromByFormId = asyncHandler(async (req, res, next) => {
 
     res.status(201).json({
         success: true,
-        message: "Accepted successfully."
+        message: "Offered successfully."
     })
 })
+
+
+export const acceptByTa = asyncHandler(async (req, res, next) => {
+    const { id } = req.body;
+
+    const form = await Form.findById(id);
+
+    if (!form) {
+        return next(new AppError('The response is not found.', 404));
+    }
+
+    form.status = 'Offer Accepted';
+
+    // Find course
+    const foundCourse = await Course.findOne({ courseId: form.courseId }).select('_id');
+    if (!foundCourse) {
+        return next(new AppError('The course is not found.', 404));
+    }
+
+    // Check if Evaluation with the same instructor and course exists
+    const foundPrevEval = await Evaluation.findOne({
+        instructor: form.instructor,
+        "under.course": foundCourse._id
+    });
+
+    if (foundPrevEval) {
+        // If Evaluation exists, update the TA for the course
+        foundPrevEval.under.push({
+            course: foundCourse._id,
+            ta: req.user.id,
+            summary: [] // Initialize an empty summary array
+        });
+        await foundPrevEval.save();
+    } else {
+        // If Evaluation doesn't exist, create a new one
+        const evaluation = await Evaluation.create({
+            instructor: form.instructor,
+            under: [{
+                course: foundCourse._id,
+                ta: req.user.id,
+                summary: [] // Initialize an empty summary array
+            }]
+        });
+
+        if (!evaluation) {
+            return next(new AppError('Error in evaluation creation', 502));
+        }
+    }
+
+    await form.save();
+
+    res.status(201).json({
+        success: true,
+        message: "Offer accepted successfully."
+    });
+
+});
+
 
 // export const createApplication = asyncHandler(async (req, res, next) => {
 

@@ -75,7 +75,17 @@ const userSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'Form',
       }
-    }]
+    }],
+    taUnder: [{
+      instructor: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+      course: {
+        type: Schema.Types.ObjectId,
+        ref: 'course',
+      }
+    }],
   },
   {
     timestamps: true,
