@@ -32,8 +32,8 @@ const evaluationSchema = new Schema(
                     required: [true, 'Remark is required'],
                 },
                 date: {
-                    type: Date,
-                    default: Date.now,
+                    type: String,
+                    default: new Date().toLocaleDateString('en-GB').replace(/\//g, '-'),
                     required: true,
                 },
             }]

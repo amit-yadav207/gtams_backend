@@ -207,8 +207,8 @@ export const acceptByTa = asyncHandler(async (req, res, next) => {
         return next(new AppError('The response is not found.', 404));
     }
 
-    form.status = 'Offer Accepted';
-
+    form.status = 'TA Assigned';
+    console.log(form.courseId);
     // Find course
     const foundCourse = await Course.findOne({ courseId: form.courseId }).select('_id');
     if (!foundCourse) {

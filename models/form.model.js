@@ -20,7 +20,6 @@ const formSchema = new Schema(
                 'Forwarded',
                 'Assigned to Instructor',
                 'Offer Pending',
-                'Offer Accepted',
                 'TA Assigned',
                 'Offer not accepted',
             ],
