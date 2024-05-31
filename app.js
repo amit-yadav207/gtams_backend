@@ -20,32 +20,37 @@ const corsOptions = {
 // Use the cors middleware with the specified options
 app.use(cors(corsOptions));
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-app.use((req, res, next) => {
 
-  res.header('Access-Control-Allow-Origin', 'https://gtams-frontend.vercel.app');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS ,PATCH');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
+// app.use((req, res, next) => {
 
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
+//   res.header('Access-Control-Allow-Origin', 'https://gtams-frontend.vercel.app');
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS ,PATCH');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   res.header('Access-Control-Allow-Credentials', 'true');
+
+//   // Handle preflight requests
+//   if (req.method === 'OPTIONS') {
+//     res.sendStatus(200);
+//   } else {
+//     next();
+//   }
+// });
 
 
 app.use(morgan('dev'));
 app.use(cookieParser());
 
+
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 // Server Status Check Route
 app.get('/ping', (_req, res) => {
   res.send('Pong');
 });
+
+
 
 // Import all routes
 import userRoutes from './routes/user.routes.js';
