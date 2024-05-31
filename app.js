@@ -57,7 +57,6 @@ import departmentRoutes from './routes/department.routes.js';
 import evaluationRoutes from './routes/evaluation.routes.js';
 
 
-app.get('/', res.send('server is running'));
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/course', courseRoutes);
 app.use('/api/v1/application', applicationRoutes);
