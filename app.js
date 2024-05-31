@@ -70,6 +70,15 @@ app.use('/api/v1/form', formRoutes)
 app.use('/api/v1/department', departmentRoutes)
 app.use('/api/v1/evaluation', evaluationRoutes)
 
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+
+
 // Default catch all route - 404
 app.all('*', (_req, res) => {
   res.status(404).send('OOPS!!! 404 Page Not Found');
