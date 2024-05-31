@@ -10,10 +10,22 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Use the cors middleware
-app.use(cors());
+const corsOptions = {
+  origin: 'https://gtams-frontend.vercel.app',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // Allow cookies to be sent with requests
+  allowedHeaders: ['Content-Type', 'Authorization'] // Adjust headers as needed
+};
+
+// Use the cors middleware with the specified options
+app.use(cors(corsOptions));
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 app.use((req, res, next) => {
 
-  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', 'https://gtams-frontend.vercel.app');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS ,PATCH');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
@@ -44,6 +56,8 @@ import formRoutes from './routes/form.routes.js';
 import departmentRoutes from './routes/department.routes.js';
 import evaluationRoutes from './routes/evaluation.routes.js';
 
+
+app.get('/', res.send('server is running'));
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/course', courseRoutes);
 app.use('/api/v1/application', applicationRoutes);

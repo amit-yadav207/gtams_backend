@@ -2,9 +2,9 @@ import { v2 } from 'cloudinary';
 
 import app from './app.js';
 import connectToDB from './configs/dbConn.js';
-import cors from 'cors'
 
-app.use(cors())
+
+
 // Cloudinary configuration
 v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
